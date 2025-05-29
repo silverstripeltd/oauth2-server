@@ -109,7 +109,11 @@ class CryptKey
         }
         $details = \openssl_pkey_get_details($pkey);
 
-        return $details !== false && \in_array(
+        // Update the check since Ed25519 is not recognised properly.
+        // This fork implementation will not be necessary if either Ed25519 will be generally available or
+        // this package updated to the latest version which supports CryptKeyInterface to easily implement
+        // custom checker.
+        return $details !== false && !empty($details['key']) || \in_array(
             $details['type'] ?? -1,
             [OPENSSL_KEYTYPE_RSA, OPENSSL_KEYTYPE_EC],
             true
